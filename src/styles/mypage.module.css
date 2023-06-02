@@ -250,3 +250,36 @@
     justify-self: end; 
   }
 }
+@media screen and (max-width: 900px) {
+  /* totaltime */
+  .totalSpan {
+    font-size: 3rem;
+  }
+
+  /* calendar */
+  .calendar-h1 {
+    font-size: 1.25rem;
+    padding: 0 10px 0 10px;
+  } 
+
+  .calendar {
+    font-size: 1rem;
+  }
+
+  .prevBtn,
+  .nextBtn {
+    border-radius: 8px;
+    padding: 5px;
+  }
+
+  .studyDate, .studyTime, .studyTimeTh {
+    font-size: 1.2rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .profile {
+    width: 9rem;
+    height: auto;
+  }
+}
