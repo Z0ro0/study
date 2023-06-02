@@ -1,46 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import styles from '../styles/mypage.module.css';
-import navStyles from '../styles/Navbar.module.css';
+import React, { useEffect, useState, useRef } from 'react';
+import Styles from '../styles/mypage.module.css';
+import navStyles from '../styles/nav.module.css';
 import logo from '../../public/logo.png';
-import leftIcon from './free-icon-font-angle-left-3916934.svg';
-import rightIcon from './free-icon-font-angle-right-3916924.svg';
+import leftIcon from '../../public/free-icon-font-angle-left-3916934.svg';
+import rightIcon from '../../public/free-icon-font-angle-right-3916924.svg';
+import userImg from '../../public/user1.png'
 import Image from 'next/image';
 
-function MyPage() {
+function App() {
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const [dateGridItems, setDateGridItems] = useState([]);
 
-  // calendar, studyTime 월 변경
+  // 달력 및 공부 시간 변경
   useEffect(() => {
     const setCalendar = (year, month) => {
-      let firstDate = new Date(year, month - 1, 1);
-      let firstDay = firstDate.getDay();
-      let lastDate = new Date(year, month, 0).getDate();
+      const firstDate = new Date(year, month - 1, 1);
+      const firstDay = firstDate.getDay();
+      const lastDate = new Date(year, month, 0).getDate();
 
       const setTitle = (year, month) => {
-        let title_year = document.getElementById('title_year');
-        if (title_year) {
+        const title_year = document.getElementById("title_year");
+        const title_month = document.getElementById("title_month");
+        if (title_year && title_month) {
           title_year.innerHTML = year;
-        }
-        let title_month = document.getElementById('title_month');
-        if (title_month) {
           title_month.innerHTML = month;
         }
       };
       setTitle(year, month);
 
-      const dateGridContainerDiv = document.getElementsByClassName('date-grid-container')[0];
+      const gridItems = [];
+      for (let i = 1; i <= lastDate; i++) {
+        gridItems.push(<div key={i} className={Styles['grid-item']}>{i}</div>);
+      }
+      setDateGridItems(gridItems);
+
+      const dateGridContainerDiv = document.getElementById("date_grid_container");
       if (dateGridContainerDiv) {
-        dateGridContainerDiv.innerHTML = '';
-
-        for (let i = 1; i <= lastDate; i++) {
-          let newDiv = document.createElement('div');
-          newDiv.classList.add('grid-item');
-          newDiv.innerHTML = i;
-          dateGridContainerDiv.appendChild(newDiv);
-        }
-
-        let firstDateDiv = dateGridContainerDiv.getElementsByClassName('grid-item')[0];
+        const firstDateDiv = dateGridContainerDiv.querySelector(`.${Styles['grid-item']}`);
         if (firstDateDiv) {
           firstDateDiv.style.gridColumnStart = firstDay + 1;
         }
@@ -72,11 +69,11 @@ function MyPage() {
     setMonth(newMonth);
   };
 
-  // 총 studyTime
-  var monthTotal = '02:26:00';
+  // 총 공부 시간
+  const monthTotal = '02:26:00';
 
-  // 최근 studyTime
-  const [studyTimeData] = useState([
+  // 최근 공부 시간
+  const studyTimeData = [
     { date: '5/25', time: '02:00:00' },
     { date: '5/26', time: '02:00:00' },
     { date: '5/27', time: '02:00:00' },
@@ -84,19 +81,19 @@ function MyPage() {
     { date: '5/29', time: '02:00:20' },
     { date: '5/30', time: '02:00:00' },
     { date: '5/31', time: '02:00:00' },
-  ]);
+  ];
 
   const renderStudyTimeRows = () => {
     return studyTimeData.map((item, index) => (
       <tr key={index}>
-        <td className='studyDate'>{item.date}</td>
-        <td className='studyTime'>{item.time}</td>
+        <td className={Styles.studyDate}>{item.date}</td>
+        <td className={Styles.studyTime}>{item.time}</td>
       </tr>
     ));
   };
 
   return (
-    <div className={styles.App}>
+    <div className={Styles.App}>
       <nav className={navStyles.nav}>
         <div className={navStyles['nav-container']}>
           <a className={navStyles.logo} href="/">
@@ -112,62 +109,61 @@ function MyPage() {
           </ul>
         </div>
       </nav>
+      <div className={Styles.container}>
+        <div className={Styles.container1}>
+          <div className={Styles.user}>
+            <Image className={Styles.profile} src={userImg} alt="프로필" />
 
-      <div id="container" className={styles.container}>
-        <div id="container1" className={styles.container1}>
-          <div id="user" className={styles.user}>
-            <img id="profile" className={styles.profile} src="./img/user1.png" alt="profile" />
-
-            <div id="userinfo" className={styles.userinfo}>
-              <p className={styles.username}>yang hyewon</p>
-              <p className={styles.useremail}>w2106@e-mirim.hs.kr</p>
-              <button className={styles.userLogout}>LOGOUT</button>
+            <div className={Styles.userinfo}>
+              <p className={Styles.username}>양혜원</p>
+              <p className={Styles.useremail}>w2106@e-mirim.hs.kr</p>
+              <button className={Styles.userLogout}>로그아웃</button>
             </div>
           </div>
 
-          <div className={styles.totalTime}>
-            <h1 className={styles.totalH1}>{year}년 {month}월 총 공부시간</h1>
-            <span className={styles.totalSpan}>{monthTotal}</span>
+          <div className={Styles.totalTime}>
+            <h1 className={Styles.totalH1}>{year}년 {month}월 총 공부시간</h1>
+            <span className={Styles.totalSpan}>{monthTotal}</span>
           </div>
         </div>
 
-        <div id="container2" className={styles.container2}>
-          <div id="usertimecal" className={styles.usertimecal}>
-            <table className={styles.studyTime}>
+        <div className={Styles.container2}>
+          <div className={Styles.usertimecal}>
+            <table className={Styles.studyTime}>
               <thead>
                 <tr>
-                  <th className={styles.studyTimeTh}>Date</th>
-                  <th className={styles.studyTimeTh}>Time</th>
+                  <th className={Styles.studyTimeTh}>날짜</th>
+                  <th className={Styles.studyTimeTh}>시간</th>
                 </tr>
               </thead>
               <tbody>{renderStudyTimeRows()}</tbody>
             </table>
           </div>
 
-          <div id="usercalendar" className={styles.usercalendar}>
-            <div className={styles.calendar}>
-              <div className={styles['flex-container']}>
-                <div id="prev_btn" className={styles.prev_btn} onClick={prevMonth}>
-                  <img src={leftIcon} className={styles['angle-icon']} alt="Prev" />
+          <div className={Styles.usercalendar}>
+            <div className={Styles.calendar}>
+              <div className={Styles['flex-container']}>
+                <div className={Styles.prevBtn} onClick={prevMonth}>
+                  <Image src={leftIcon} className={Styles['angle-icon']} alt="이전" />
                 </div>
-                <h1 className={styles['calendar-h1']}>
-                  <span id="title_year" className={styles.title_year}></span>년 <span id="title_month" className={styles.title_month}></span>월
+                <h1 className={Styles['calendar-h1']}>
+                  <span id="title_year" className={Styles.titleYear}></span>년 <span id="title_month" className={Styles.titleMonth}></span>월
                 </h1>
-                <div id="next_btn" className={styles.next_btn} onClick={nextMonth}>
-                  <img src={rightIcon} className={styles['angle-icon']} alt="Next" />
+                <div className={Styles.nextBtn} onClick={nextMonth}>
+                  <Image src={rightIcon} className={Styles['angle-icon']} alt="다음" />
                 </div>
               </div>
-              <div id="calendar" className={styles.calendar}>
-                <div className={styles['grid-container-calendar']}>
-                  <div className={styles['grid-item']}>일</div>
-                  <div className={styles['grid-item']}>월</div>
-                  <div className={styles['grid-item']}>화</div>
-                  <div className={styles['grid-item']}>수</div>
-                  <div className={styles['grid-item']}>목</div>
-                  <div className={styles['grid-item']}>금</div>
-                  <div className={styles['grid-item']}>토</div>
+              <div className={Styles.calendar}>
+                <div className={Styles['grid-container-calendar']}>
+                  <div className={Styles['grid-item']}>일</div>
+                  <div className={Styles['grid-item']}>월</div>
+                  <div className={Styles['grid-item']}>화</div>
+                  <div className={Styles['grid-item']}>수</div>
+                  <div className={Styles['grid-item']}>목</div>
+                  <div className={Styles['grid-item']}>금</div>
+                  <div className={Styles['grid-item']}>토</div>
                 </div>
-                <div className={styles['date-grid-container']}></div>
+                <div id='date_grid_container' className={Styles['date-grid-container']}>{dateGridItems}</div>
               </div>
             </div>
           </div>
@@ -177,4 +173,4 @@ function MyPage() {
   );
 }
 
-export default MyPage;
+export default App;
